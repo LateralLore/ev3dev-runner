@@ -13,11 +13,6 @@
 #include "ev3_sensors.h"
 #include "ev3_tachos.h"
 
-/* other file inclusions */
-#include "handler.c"
-#include "grabber.c"
-#include "init.c"
-
 int init(uint8_t *snm, uint8_t *snm); /* full init, returns 1 if successful, negative if fail */
 float *grabber(uint8_t *sns); /* grabs raw RGB values sensors, returns pointer to array */
 int sorter(uint8_t *refp); /* takes array from grabber and returns which sensors see black */

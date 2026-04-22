@@ -5,20 +5,18 @@
 #include <unistd.h>
 
 #include "ev3_tacho.h"
-#include "getop.c"
-#include "stack.c"
 
 int getop(char *s); /* gets operation as integer, s is output string, uses getch */
 void push(int d); /* pushes value onto stack */
 int pop(void); /* pops value off of stack */
 
 /* handles speeds and directions taken from stdin */
-int handler(uint8_t snm[])
+int handler(uint8_t *snm)
 {
   char o[MAXLINELEN];
   long flags;
   int i;
-  uint8_t snd[] = {snm[0], snm[1]};
+  uint8_t snd[] = {*(snm+2),*(snm+1)};
 
   while ((i = getop(o)) != '\n') {
     switch (i) {
@@ -28,13 +26,13 @@ int handler(uint8_t snm[])
     case 's': /* set speed */
       switch (i = getop(o)) {
       case 'l': /* left motor */
-	set_tacho_speed_sp(snm[0], pop());
+	set_tacho_speed_sp(*(snm+2), pop());
 	break;
       case 'r': /* right motor */
-	set_tacho_speed_sp(snm[1], pop());
+	set_tacho_speed_sp(*(snm+1), pop());
 	break;
       case 'c': /* central motor */
-	set_tacho_speed_sp(snm[2], pop());
+	set_tacho_speed_sp(*snm, pop());
 	break;
       default:
 	printf("error: motor %c is not recognised\n", i);
@@ -44,13 +42,13 @@ int handler(uint8_t snm[])
     case 'p': /* set position */
       switch (i = getop(o)) {
       case 'l':
-	set_tacho_position_sp(snm[0], pop());
+	set_tacho_position_sp(*(snm+2), pop());
 	break;
       case 'r':
-	set_tacho_position_sp(snm[1], pop());
+	set_tacho_position_sp(*(snm+1), pop());
 	break;
       case 'c':
-	set_tacho_position_sp(snm[2], pop());
+	set_tacho_position_sp(*snm, pop());
 	break;
       default:
 	printf("error: motor %c is not recognised\n", i);
@@ -60,13 +58,13 @@ int handler(uint8_t snm[])
     case 't': /* set time */
       switch (i = getop(o)) {
       case 'l':
-	set_tacho_time_sp(snm[0], pop());
+	set_tacho_time_sp(*(snm+2), pop());
 	break;
       case 'r':
-	set_tacho_time_sp(snm[1], pop());
+	set_tacho_time_sp(*(snm+1), pop());
 	break;
       case 'c':
-	set_tacho_time_sp(snm[2], pop());
+	set_tacho_time_sp(*snm, pop());
 	break;
       default:
 	printf("error: motor %c is not recognised\n", i);
@@ -76,13 +74,13 @@ int handler(uint8_t snm[])
     case 'd': /* set polarity of motors */
       switch (i = getop(o)) {
       case 'l':
-	set_tacho_polarity_inx(snm[0], pop());
+	set_tacho_polarity_inx(*(snm+2), pop());
 	break;
       case 'r':
-	set_tacho_polarity_inx(snm[1], pop());
+	set_tacho_polarity_inx(*(snm+1), pop());
 	break;
       case 'c':
-	set_tacho_polarity_inx(snm[2], pop());
+	set_tacho_polarity_inx(*snm, pop());
 	break;
       default:
 	printf("error: motor %c is not recognised\n", i);
@@ -92,13 +90,13 @@ int handler(uint8_t snm[])
     case 'r': /* give run command (must be given as number and not as string) */
       switch (i = getop(o)) {
       case 'l':
-	set_tacho_command_inx(snm[0], pop());
+	set_tacho_command_inx(*(snm+2), pop());
 	break;
       case 'r':
-	set_tacho_command_inx(snm[1], pop());
+	set_tacho_command_inx(*(snm+1), pop());
 	break;
       case 'c':
-	set_tacho_command_inx(snm[2], pop());
+	set_tacho_command_inx(*snm, pop());
 	break;
       case 'd': /* left and right motor, for driving */
 	multi_set_tacho_command_inx(snd, pop());
@@ -111,14 +109,14 @@ int handler(uint8_t snm[])
     case 'f': /* special flags for complex handling, syntax must be done on multiple lines */
       switch (i = getop(o)) {
 	/* case 'w':
-	for (get_tacho_state_flags(snm[0], &flags);
-	     flags != 0 && flags != 0x4L; get_tacho_state_flags(snm[0], &flags))
+	for (get_tacho_state_flags(*(snm+2), &flags);
+	     flags != 0 && flags != 0x4L; get_tacho_state_flags(*(snm+2), &flags))
 	  ;
-	for (get_tacho_state_flags(snm[1], &flags);
-	     flags != 0 && flags != 0x4L; get_tacho_state_flags(snm[1], &flags))
+	for (get_tacho_state_flags(*(snm+1), &flags);
+	     flags != 0 && flags != 0x4L; get_tacho_state_flags(*(snm+1), &flags))
 	  ;
-	for (get_tacho_state_flags(snm[2], &flags);
-	     flags != 0 && flags != 0x4L; get_tacho_state_flags(snm[2], &flags))
+	for (get_tacho_state_flags(*snm, &flags);
+	     flags != 0 && flags != 0x4L; get_tacho_state_flags(*snm, &flags))
 	  ;
 	return 1; */
       case 's': /* sleeps for amount of us */

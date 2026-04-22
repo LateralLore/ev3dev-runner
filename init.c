@@ -7,19 +7,10 @@
 #include "ev3_sensor.h"
 #include "ev3_tacho.h"
 
-#include "handler.c"
-
-/* init: properly initialises everything; snm and sns arrays are in format
-   snm[0] = left motor
-   snm[1] = right motor
-   snm[2] = central motor
-
-   sns[0-3] = sensors 1-4
-*/
-
 int init(uint8_t *snm, uint8_t *sns)
 {
   int i = 0;
+  uint8_t j, k;
   
   if (ev3_init() < 1)
     printf("error: ev3_init fail\n"), i--;
@@ -39,16 +30,18 @@ int init(uint8_t *snm, uint8_t *sns)
     printf("pass: sensor init\n");
   if (i < 0)
     return -1;
-
-  while ((i = handler(0)) > 0)
-    *snm++ = ev3_search_port((uint8_t) i, 0);
-  while ((i = handler(0)) > 0)
-    *sns++ = ev3_search_port((uint8_t) i, 0);
-
-  set_tacho_polarity_inx(snm[1], TACHO_INVERSED);
-
+  for (i = 0, k = 0; i < 4; i++, k++) {
+    ev3_search_sensor(LEGO_EV3_COLOR, &j, k);
+    k = j;
+    *(sns + (ev3_sensor_desc_port(j)-49)) = j;
+  }
+  for (i = 0, k = 0; i < 4; i++, k++) {
+    ev3_search_tacho(LEGO_EV3_COLOR, &j, k);
+    k = j;
+    *(snm + (ev3_tacho_desc_port(j)-49)) = j;
+  }
+  set_tacho_polarity_inx(*(snm+1), TACHO_INVERSED);
   multi_set_sensor_mode_inx(sns, LEGO_EV3_COLOR_RGB_RAW);
-
   return 1;
 }
 
