@@ -3,15 +3,13 @@
 #include "ev3_sensor.h"
 
 /* grabs info from sensors, input is an array with the sensor sequence numbers */
-float *grabber(uint8_t *sns)
+float *grabber(uint8_t *sns, float *buf)
 {
   int i;
-  static float buf[12];
-  float *bufp = buf;
   for (i = 0; i < 4; i++, sns++) {
-    get_sensor_value0(*sns, bufp++);
-    get_sensor_value1(*sns, bufp++);
-    get_sensor_value2(*sns, bufp++);
+    get_sensor_value0(*sns, buf++);
+    get_sensor_value1(*sns, buf++);
+    get_sensor_value2(*sns, buf++);
   }
   return buf;
 }

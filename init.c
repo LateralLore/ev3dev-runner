@@ -35,10 +35,10 @@ int init(uint8_t *snm, uint8_t *sns)
     k = j;
     *(sns + (ev3_sensor_desc_port(j)-49)) = j;
   }
-  for (i = 0, k = 0; i < 4; i++, k++) {
-    ev3_search_tacho(LEGO_EV3_COLOR, &j, k);
+  for (i = 0, k = 0; i < 3; i++, k++) {
+    ev3_search_tacho(LEGO_EV3_M_MOTOR, &j, k);
     k = j;
-    *(snm + (ev3_tacho_desc_port(j)-49)) = j;
+    *(snm + (ev3_tacho_desc_port(j)-65)) = j;
   }
   set_tacho_polarity_inx(*(snm+1), TACHO_INVERSED);
   multi_set_sensor_mode_inx(sns, LEGO_EV3_COLOR_RGB_RAW);

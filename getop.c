@@ -7,7 +7,6 @@ void ungetch(int);
 int getop(char *s)
 {
   int c;
-  
   while ((*s = c = getch()) == ' ' || c == '\t')
     ;
   *(s+1) = '\0';
