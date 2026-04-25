@@ -41,6 +41,7 @@ int init(uint8_t *snm, uint8_t *sns)
     *(snm + (ev3_tacho_desc_port(j)-65)) = j;
   }
   set_tacho_polarity_inx(*(snm+1), TACHO_INVERSED);
+  multi_set_tacho_stop_action_inx(snm, TACHO_BRAKE);
   multi_set_sensor_mode_inx(sns, LEGO_EV3_COLOR_RGB_RAW);
   return 1;
 }

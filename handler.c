@@ -4,7 +4,10 @@
 #include <ctype.h>
 #include <unistd.h>
 
+#include "ev3.h"
 #include "ev3_tacho.h"
+
+#define MAXLINELEN 100
 
 int getop(char *s); /* gets operation as integer, s is output string, uses getch */
 void push(int d); /* pushes value onto stack */
@@ -14,7 +17,7 @@ int pop(void); /* pops value off of stack */
 int handler(uint8_t *snm)
 {
   char o[MAXLINELEN];
-  long flags;
+  uint8_t flags;
   int i;
   uint8_t snd[] = {*(snm+2),*(snm+1)};
 
@@ -108,17 +111,12 @@ int handler(uint8_t *snm)
       break;
     case 'f': /* special flags for complex handling, syntax must be done on multiple lines */
       switch (i = getop(o)) {
-	/* case 'w':
-	for (get_tacho_state_flags(*(snm+2), &flags);
-	     flags != 0 && flags != 0x4L; get_tacho_state_flags(*(snm+2), &flags))
-	  ;
-	for (get_tacho_state_flags(*(snm+1), &flags);
-	     flags != 0 && flags != 0x4L; get_tacho_state_flags(*(snm+1), &flags))
-	  ;
-	for (get_tacho_state_flags(*snm, &flags);
-	     flags != 0 && flags != 0x4L; get_tacho_state_flags(*snm, &flags))
-	  ;
-	return 1; */
+      case 'w':
+	for (i = 0; i < 3; i++)
+	  do {
+	    get_tacho_state_flags(*(snm+i), &flags);
+	  } while (flags > 0);
+	break;
       case 's': /* sleeps for amount of us */
 	usleep(pop());
 	break;

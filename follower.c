@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include "ev3.h"
 #include "ev3_tacho.h"
 
 int handler(uint8_t *snm);
@@ -12,7 +13,7 @@ int sorter(float *refp);
 int follower(uint8_t *snm, uint8_t *sns)
 {
   int i;
-  uint8_t snl = *(snm+2)
+  uint8_t snl = *(snm+2);
   uint8_t snr = *(snm+1);
   uint8_t snd[2] = {snl, snr};
   float ref[12];
